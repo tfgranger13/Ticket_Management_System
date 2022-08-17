@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>TMS - Message Admin</title>
+</head>
+<body>
+	<div class="container">
+	
+		<h3>Message Form</h3>
+		<hr>
+		
+		<p class="h4 mb-4">Save Message</p>
+	
+		<form th:action="@{/admin/saveMessage}" th:object="${messageDTO}" method="POST">
+		
+			<!-- Add hidden form field to handle update -->
+			<input type="hidden" th:field="*{id}" />
+			<input type="hidden" th:field="*{createdAt}" />
+			<input type="hidden" th:field="*{updatedAt}" />
+					
+			<select class="form-control" id="ticket_id" name="ticket_id">
+				<option value="">None</option>
+			    <option th:each="ticket : ${tickets}"
+			    		th:value="${ticket['key']}"
+			    		th:text="${ticket['value']}"></option>
+			</select>
+			
+			<select class="form-control" id="employee_id" name="employee_id">
+			    <option value="">None</option>
+			    <option th:each="employee : ${employees}"
+			    		th:value="${employee['key']}"
+			    		th:text="${employee['value']}"></option>
+			</select>
+			
+			<select class="form-control" id="customer_id" name="customer_id">
+				<option value="">None</option>
+			    <option th:each="customer : ${customers}"
+			    		th:value="${customer['key']}"
+			    		th:text="${customer['value']}"></option>
+			</select>
+				
+			<input type="text" th:field="*{content}"
+					class="form-control mb-4 col-4" placeholder="Content">
+					
+			<button type="submit" class="btn btn-info col-2">Save</button>
+						
+		</form>
+	
+		<hr>
+		<a th:href="@{/admin/list}">Back to Admin List</a>
+		
+	</div>
+</body>
+</html>

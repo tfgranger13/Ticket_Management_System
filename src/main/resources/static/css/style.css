@@ -1,0 +1,22 @@
+@charset "ISO-8859-1";
+
+#below-header{
+    margin-top: 75px;
+    padding-top: 20px;
+}
+
+h1, h3{
+    font-family: "Audiowide", sans-serif;
+}
+
+#thumbsUp{
+    width: 100%;
+}
+
+#welcome{
+    color: #dd3544;
+}
+
+body{
+	margin-bottom:50px;
+}

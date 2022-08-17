@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>TMS - Customer Admin</title>
+</head>
+<body>
+	<div class="container">
+	
+		<h3>Customer Form</h3>
+		<hr>
+		
+		<p class="h4 mb-4">Save Customer</p>
+	
+		<form th:action="@{/admin/saveCustomer}" th:object="${newCustomer}" method="POST">
+		
+			<!-- Add hidden form field to handle update -->
+			<input type="hidden" th:field="*{id}" />
+			<input type="hidden" th:field="*{createdAt}" />
+			<input type="hidden" th:field="*{updatedAt}" />
+			
+			<input type="text" th:field="*{firstName}"
+					class="form-control mb-4 col-4" placeholder="First name">
+
+			<input type="text" th:field="*{lastName}"
+					class="form-control mb-4 col-4" placeholder="Last name">
+
+			<input type="text" th:field="*{email}"
+					class="form-control mb-4 col-4" placeholder="Email">
+					
+			<input type="text" th:field="*{password}"
+					class="form-control mb-4 col-4" placeholder="Password">
+				
+			<button type="submit" class="btn btn-info col-2">Save</button>
+						
+		</form>
+	
+		<hr>
+		<a th:href="@{/admin/list}">Back to Admin List</a>
+		
+	</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>TMS - Ticket Admin</title>
+</head>
+<body>
+	<div class="container">
+	
+		<h3>Ticket Form</h3>
+		<hr>
+		
+		<p class="h4 mb-4">Save Ticket</p>
+	
+		<form th:action="@{/admin/saveTicket}" th:object="${ticketDTO}" method="POST">
+		
+			<!-- Add hidden form field to handle update -->
+			<input type="hidden" th:field="*{ticket_id}" />
+			<input type="hidden" th:field="*{createdAt}" />
+			<input type="hidden" th:field="*{updatedAt}" />
+			
+			<input type="text" th:field="*{detail}"
+					class="form-control mb-4 col-4" placeholder="Detail">
+					
+			<select th:field="*{priority}">
+			    <option th:value="low" th:text="Low" th:selected="true"></option>
+			    <option th:value="high" th:text="High"></option>
+			    <option th:value="critical" th:text="Critical"></option>
+			</select>
+			
+			<select th:field="*{status}">
+			    <option th:value="open" th:text="Open" th:selected="true"></option>
+			    <option th:value="closed" th:text="Closed"></option>
+			    <option th:value="cancelled" th:text="Cancelled"></option>
+			</select>
+
+			<select class="form-control" id="department_id" name="department_id">
+				<option value="">None</option>
+			    <option th:each="department : ${departments}"
+			    		th:value="${department['key']}"
+			    		th:text="${department['value']}"></option>
+			</select>
+			
+			<select class="form-control" id="employee_id" name="employee_id">
+				<option value="">None</option>
+			    <option th:each="employee : ${employees}"
+			    		th:value="${employee['key']}"
+			    		th:text="${employee['value']}"></option>
+			</select>
+			
+			<select class="form-control" id="customer_id" name="customer_id">
+				<option value="">None</option>
+			    <option th:each="customer : ${customers}"
+			    		th:value="${customer['key']}"
+			    		th:text="${customer['value']}"></option>
+			</select>			
+				
+			<button type="submit" class="btn btn-info col-2">Save</button>
+						
+		</form>
+	
+		<hr>
+		<a th:href="@{/admin/list}">Back to Admin List</a>
+		
+	</div>
+</body>
+</html>
