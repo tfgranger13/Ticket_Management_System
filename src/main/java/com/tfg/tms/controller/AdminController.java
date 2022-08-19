@@ -36,9 +36,6 @@ import lombok.extern.slf4j.Slf4j;
  * This class is a controller to give the admin full CRUD functionality for the entities in the site
  */
 
-// FIXME: get this controller to work with the session attribute for the user
-// TODO: update all the admin views to have the same navbar and formatting
-
 @Slf4j
 @Controller
 //declare the customer as a session attribute to be used throughout the controller
@@ -111,13 +108,19 @@ public class AdminController {
 	 */
 
 	@GetMapping("/showCustomerFormForAdd")
-	public String showCustomerFormForAdd(Model model) {
+	public String showCustomerFormForAdd(@ModelAttribute("customer") Customer customer, Model model) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// create a customer object to bind the data to
-		Customer customer = new Customer();
+		Customer newCustomer = new Customer();
 
 		// attach the new object to the model
-		model.addAttribute("newCustomer", customer);
+		model.addAttribute("newCustomer", newCustomer);
+
+		// add flag for update form
+		model.addAttribute("updateFlag", false);
 
 		// send user to the page to add a new customer
 		return "/admin/admin_form_customer";
@@ -125,13 +128,13 @@ public class AdminController {
 	}
 
 	@PostMapping("/saveCustomer")
-	public String saveCustomer(@ModelAttribute("newCustomer") Customer customer) {
+	public String saveCustomer(@ModelAttribute("newCustomer") Customer newCustomer) {
 
 		// save the model using the service
-		adminService.saveCustomer(customer);
+		adminService.saveCustomer(newCustomer);
 
 		// log the transaction
-		log.info("admin added " + customer.getEmail());
+		log.info("admin added " + newCustomer.getEmail());
 
 		// redirect back to the list page
 		return "redirect:/admin/list";
@@ -139,13 +142,20 @@ public class AdminController {
 	}
 
 	@GetMapping("/showCustomerFormForUpdate")
-	public String showCustomerFormForUpdate(@RequestParam("customerId") Integer id, Model model) {
+	public String showCustomerFormForUpdate(@RequestParam("customerId") Integer id,
+			@ModelAttribute("customer") Customer customer, Model model) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// create a customer object to bind the data to
-		Customer customer = adminService.getCustomer(id);
+		Customer newCustomer = adminService.getCustomer(id);
 
 		// attach the new object to the model
-		model.addAttribute("customer", customer);
+		model.addAttribute("newCustomer", newCustomer);
+
+		// add flag for update form re:password
+		model.addAttribute("updateFlag", true);
 
 		// send back to the form
 		return "/admin/admin_form_customer";
@@ -176,7 +186,10 @@ public class AdminController {
 	 */
 
 	@GetMapping("/showEmployeeFormForAdd")
-	public String showEmployeeFormForAdd(Model model) {
+	public String showEmployeeFormForAdd(Model model, @ModelAttribute("customer") Customer customer) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// get list of all the departments from the database and add it to the model
 		List<Department> departments = adminService.getDepartments();
@@ -195,6 +208,9 @@ public class AdminController {
 
 		// attach the new object to the model
 		model.addAttribute("employeeDTO", employeeDTO);
+
+		// add flag for update form re:password
+		model.addAttribute("updateFlag", false);
 
 		// send user to the page to add a new employee
 		return "/admin/admin_form_employee";
@@ -233,7 +249,11 @@ public class AdminController {
 	}
 
 	@GetMapping("/showEmployeeFormForUpdate")
-	public String showEmployeeFormForUpdate(@RequestParam("employeeId") Integer id, Model model) {
+	public String showEmployeeFormForUpdate(@RequestParam("employeeId") Integer id, Model model,
+			@ModelAttribute("customer") Customer customer) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// get list of all the departments from the database and add it to the model
 		List<Department> departments = adminService.getDepartments();
@@ -251,6 +271,9 @@ public class AdminController {
 
 		// attach the new object to the model
 		model.addAttribute("employeeDTO", employeeDTO);
+
+		// add flag for update form re:password
+		model.addAttribute("updateFlag", true);
 
 		// send back to the form
 		return "/admin/admin_form_employee";
@@ -280,7 +303,10 @@ public class AdminController {
 	 */
 
 	@GetMapping("/showDepartmentFormForAdd")
-	public String showDepartmentFormForAdd(Model model) {
+	public String showDepartmentFormForAdd(Model model, @ModelAttribute("customer") Customer customer) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// create an department object to bind the data to
 		Department department = new Department();
@@ -307,12 +333,17 @@ public class AdminController {
 	}
 
 	@GetMapping("/showDepartmentFormForUpdate")
-	public String showDepartmentFormForUpdate(@RequestParam("departmentId") Integer id, Model model) {
+	public String showDepartmentFormForUpdate(@RequestParam("departmentId") Integer id, Model model,
+			@ModelAttribute("customer") Customer customer) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// create a customer object to bind the data to
 		Department department = adminService.getDepartment(id);
 
-		// attach the new object to the model
+		// attach the new object to the model, @ModelAttribute("customer") Customer
+		// customer
 		model.addAttribute("department", department);
 
 		// send back to the form
@@ -346,7 +377,10 @@ public class AdminController {
 	 */
 
 	@GetMapping("/showTicketFormForAdd")
-	public String showTicketFormForAdd(Model model) {
+	public String showTicketFormForAdd(Model model, @ModelAttribute("customer") Customer customer) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// get list of all the departments from the database and add it to the model
 		List<Department> departments = adminService.getDepartments();
@@ -372,8 +406,8 @@ public class AdminController {
 
 		Map<Integer, String> customerMap = new LinkedHashMap<Integer, String>();
 
-		for (Customer customer : customers) {
-			customerMap.put(customer.getId(), customer.getFirstName() + " " + customer.getLastName());
+		for (Customer tempCustomer : customers) {
+			customerMap.put(tempCustomer.getId(), tempCustomer.getFirstName() + " " + tempCustomer.getLastName());
 		}
 
 		model.addAttribute("customers", customerMap);
@@ -438,7 +472,11 @@ public class AdminController {
 	}
 
 	@GetMapping("/showTicketFormForUpdate")
-	public String showTicketFormForUpdate(@RequestParam("ticketId") Integer id, Model model) {
+	public String showTicketFormForUpdate(@RequestParam("ticketId") Integer id, Model model,
+			@ModelAttribute("customer") Customer customer) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// get list of all the departments from the database and add it to the model
 		List<Department> departments = adminService.getDepartments();
@@ -459,8 +497,8 @@ public class AdminController {
 		// get list of all the customers from the database and add it to the model
 		List<Customer> customers = adminService.getCustomers();
 		Map<Integer, String> customerMap = new LinkedHashMap<Integer, String>();
-		for (Customer customer : customers) {
-			customerMap.put(customer.getId(), customer.getFirstName() + " " + customer.getLastName());
+		for (Customer tempCustomer : customers) {
+			customerMap.put(tempCustomer.getId(), tempCustomer.getFirstName() + " " + tempCustomer.getLastName());
 		}
 		model.addAttribute("customers", customerMap);
 
@@ -498,7 +536,10 @@ public class AdminController {
 	 */
 
 	@GetMapping("/showMessageFormForAdd")
-	public String showMessageFormForAdd(Model model) {
+	public String showMessageFormForAdd(Model model, @ModelAttribute("customer") Customer customer) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// get list of all the employees from the database and add it to the model
 		List<Employee> employees = adminService.getEmployees();
@@ -511,8 +552,8 @@ public class AdminController {
 		// get list of all the customers from the database and add it to the model
 		List<Customer> customers = adminService.getCustomers();
 		Map<Integer, String> customerMap = new LinkedHashMap<Integer, String>();
-		for (Customer customer : customers) {
-			customerMap.put(customer.getId(), customer.getFirstName() + " " + customer.getLastName());
+		for (Customer tempCustomer : customers) {
+			customerMap.put(tempCustomer.getId(), tempCustomer.getFirstName() + " " + tempCustomer.getLastName());
 		}
 		model.addAttribute("customers", customerMap);
 
@@ -569,7 +610,11 @@ public class AdminController {
 	}
 
 	@GetMapping("/showMessageFormForUpdate")
-	public String showMessageFormForUpdate(@RequestParam("messageId") Integer id, Model model) {
+	public String showMessageFormForUpdate(@RequestParam("messageId") Integer id, Model model,
+			@ModelAttribute("customer") Customer customer) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
 
 		// get list of all the tickets from the database and add it to the model
 		List<Ticket> tickets = adminService.getTickets();
@@ -590,8 +635,8 @@ public class AdminController {
 		// get list of all the customers from the database and add it to the model
 		List<Customer> customers = adminService.getCustomers();
 		Map<Integer, String> customerMap = new LinkedHashMap<Integer, String>();
-		for (Customer customer : customers) {
-			customerMap.put(customer.getId(), customer.getFirstName() + " " + customer.getLastName());
+		for (Customer tempCustomer : customers) {
+			customerMap.put(tempCustomer.getId(), tempCustomer.getFirstName() + " " + tempCustomer.getLastName());
 		}
 		model.addAttribute("customers", customerMap);
 

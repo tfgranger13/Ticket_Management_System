@@ -181,18 +181,23 @@ public class CustomerController {
 		CustomerMessageDTO custMessageDTO = new CustomerMessageDTO();
 		model.addAttribute("newMessage", custMessageDTO);
 
-		// grab all the messages so they can be sorted
-		List<Message> messages = adminService.getMessagesFromTicket(id);
+		if (ticket != null) {
 
-		// this will sort the list
-		Collections.sort(messages, new Comparator<Message>() {
-			@Override
-			public int compare(Message o1, Message o2) {
-				return o1.getCreatedAt().compareTo(o2.getCreatedAt());
-			}
-		});
+			// grab all the messages so they can be sorted
+			List<Message> messages = adminService.getMessagesFromTicket(id);
 
-		model.addAttribute("messages", messages);
+			// this will sort the list
+			Collections.sort(messages, new Comparator<Message>() {
+				@Override
+				public int compare(Message o1, Message o2) {
+					return o1.getCreatedAt().compareTo(o2.getCreatedAt());
+				}
+			});
+
+			model.addAttribute("messages", messages);
+		} else {
+			model.addAttribute("messages", null);
+		}
 
 		return "/customer/ticket_detail";
 	}
@@ -211,7 +216,6 @@ public class CustomerController {
 		message.setCustomer(customer);
 
 		// set the ticket
-		System.out.println("ticket id: " + custMessageDTO.getTicketId());
 		Ticket ticket = adminService.getTicket(custMessageDTO.getTicketId());
 		message.setTicket(ticket);
 
@@ -223,6 +227,29 @@ public class CustomerController {
 
 		// redirect to the ticket detail page
 		return "redirect:/customer/detail";
+	}
+
+	@GetMapping("/update")
+	public String showUpdateForm(@ModelAttribute("customer") Customer customer, Model model) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
+
+		// TODO: use the same form, but use the updateFlag trick from admin controller
+		// to hide the pw
+
+		return "/customer/customer_update";
+
+	}
+
+	@GetMapping("/delete")
+	public String showDeleteForm(@ModelAttribute("customer") Customer customer, Model model) {
+
+		// add the customer to the model as the user
+		model.addAttribute("user", customer);
+
+		return "/customer/customer_delete";
+
 	}
 
 }

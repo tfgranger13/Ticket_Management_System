@@ -1,8 +1,6 @@
 package com.tfg.tms;
 
-// @formatter:off
 import static org.assertj.core.api.Assertions.assertThat;
-// @formatter:on
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

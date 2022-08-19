@@ -6,22 +6,33 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /*
- * This class creates a user object 
+ * This file is from the JavaDevJournal guide found at https://www.javadevjournal.com/spring-security-tutorial/
+ * 
+ * This class creates an object to compare for authentication
  */
 
 public class CustomUser implements UserDetails {
-
 	private static final long serialVersionUID = 1L;
 
+	// these are the attributes I am mainly concerned with for security in my site
 	private String password;
 	private String username;
 	private Collection<GrantedAuthority> authorities;
+
+	/*
+	 * these features are not being implemented in my site, but are required to
+	 * implement the UserDetails interface
+	 */
 	private boolean accountNonExpired;
 	private boolean accountNonLocked;
 	private boolean credentialsNonExpired;
 	private boolean enabled;
 	private String secret;
 
+	/*
+	 * these are the constructors, but this class is built in the
+	 * CustomUserDetailsService using the CustomUserBuilder class found below.
+	 */
 	public CustomUser(String username, String password, Collection<? extends GrantedAuthority> authorities,
 			String secret) {
 		this(username, password, true, true, true, true, authorities, secret);
@@ -37,11 +48,16 @@ public class CustomUser implements UserDetails {
 
 		this.username = username;
 		this.password = password;
+		this.authorities = null;
+
+		/*
+		 * again, these fields are not being implemented in my site but are required to
+		 * implement the interface
+		 */
 		this.enabled = enabled;
 		this.accountNonExpired = accountNonExpired;
 		this.credentialsNonExpired = credentialsNonExpired;
 		this.accountNonLocked = accountNonLocked;
-		this.authorities = null;
 		this.secret = secret;
 	}
 
@@ -102,9 +118,12 @@ public class CustomUser implements UserDetails {
 	}
 
 	/*
-	 * CLASSCEPTION!!!!! This class will build the user object based on the above
-	 * constraints most of these are not utilized in my project, but it's
-	 * interesting to see how far you can go with user authentication
+	 * CLASSCEPTION!!!!! This class is a builder pattern that will construct the
+	 * CustomUser object based on the included methods, but most of these are not
+	 * utilized in my project so I only need the withPassword, withUsername, and
+	 * withAuthorities methods for now.
+	 * 
+	 * It's interesting to see how far you can go with user authentication!
 	 */
 
 	public static final class CustomUserBuilder {

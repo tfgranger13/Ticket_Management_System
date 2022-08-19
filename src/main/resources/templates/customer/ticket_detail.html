@@ -66,16 +66,16 @@
             <h1 id="welcome">Welcome <span th:text="${user.firstName}"></span> <span th:text="${user.lastName}"></span>!</h1>
         </div>
         
-		<h2>Ticket #<span th:text="${ticket.id}"></span></h2>
-		
-		<!-- run a check to make sure the session customer and ticket customer match -->
-		<div th:if="${customer.id == ticket.customer.id}">
+		<!-- run a check to make sure the session customer and ticket customer match and that the ticket exists -->
+		<div th:if="${ticket != null} and ${customer.id == ticket.customer.id}">
+
+		<h2>Ticket #<span th:text="${ticket.id}"></span></h2>		
         
 	        <div class="row">
 	
 	            <div class="col-4">
 		
-					<p>Ticket Details</p>
+					<h3>Ticket Details</h3>
 					
 					<table class="table table-striped table-dark table-hover">
 						
@@ -111,15 +111,13 @@
 	
 					</table>
 					
-					<p>update button?</p>
-					
 				</div>
 				
 				<div class="col-8">
 				
-					<p>Ticket Messages</p>
+					<h3>Ticket Messages</h3>
 					
-					<table class="table table-striped table-dark table-hover">
+					<!-- <table class="table table-striped table-dark table-hover">
 					
 						<tr>
 							<th scope="col">From:</th>
@@ -127,14 +125,16 @@
 							<th scope="col">Message:</th>
 						</tr>
 						
-						<!-- <tr th:each="tempMessage: ${ticket.messages}"> -->
+						<tr th:each="tempMessage: ${ticket.messages}">
 						<tr th:each="tempMessage: ${messages}">
 							<td th:text="${tempMessage.employee} ? ${tempMessage.employee.firstName}+' '+${tempMessage.employee.lastName} : ${tempMessage.customer.firstName}+' '+${tempMessage.customer.lastName}"></td>
 							<td th:text="${{tempMessage.createdAt}}"></td>
 							<td th:text="${tempMessage.content}"></td>
 						</tr>
 					
-					</table>
+					</table> -->
+					
+					<p th:each="tempMessage: ${messages}"><span th:text="${{tempMessage.createdAt}}"></span> from <span th:text="${tempMessage.employee} ? ${tempMessage.employee.firstName}+' '+${tempMessage.employee.lastName} : ${tempMessage.customer.firstName}+' '+${tempMessage.customer.lastName}"></span>: <span th:text="${tempMessage.content}"></span></p>
 					
 					<form th:action="@{/customer/message}" th:object="${newMessage}" method="POST">
 						
@@ -158,7 +158,7 @@
 	
 		</div>
 		
-		<div th:if="${customer.id != ticket.customer.id}">
+		<div th:if="${ticket == null} or ${customer.id != ticket.customer.id}">
 			<p>Sorry, the details for this ticket are not available to you.</p>
 		</div>
 		

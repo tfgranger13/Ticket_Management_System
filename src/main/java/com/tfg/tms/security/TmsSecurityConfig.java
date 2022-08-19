@@ -23,12 +23,15 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class TmsSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	// utilizes the userDetailsService to build the login user object
 	@Resource
 	private UserDetailsService userDetailsService;
 
+	// bcrypt for password hashing
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
+	// create a bean to make the DAO authentication object
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -37,6 +40,7 @@ public class TmsSecurityConfig extends WebSecurityConfigurerAdapter {
 		return provider;
 	}
 
+	// use the DAO authentication bean to authenticate the login request
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
@@ -47,8 +51,7 @@ public class TmsSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) {
 		web.ignoring()
-		/*.antMatchers("/resources/**", "/static/**", "/css/**", "/scripts/**", "/images/**");*/
-		.antMatchers("/global/**");
+		.antMatchers("/resources/**", "/static/**");
 	}
 	// formatter:on
 
@@ -57,10 +60,7 @@ public class TmsSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-//			.csrf().disable() // I think I'm ok without disabling csrf, thymeleaf generates the token and my logout is a post form
 			.authorizeRequests()
-			.antMatchers("/resources/**").permitAll()
-			.antMatchers("/global/**","/static/**").permitAll()
 			.antMatchers("/admin/**").hasAuthority("ADMIN")
 			.antMatchers("/customer/**").hasAnyAuthority("ADMIN", "CUSTOMER")
 			.antMatchers("/api/**").hasAnyAuthority("ADMIN", "CUSTOMER")
