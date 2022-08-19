@@ -52,7 +52,8 @@ If you think you have a good idea for the site, please let me know and I will ta
 
 Security aspects of this project were developed with the help of\
 the JavadevJournal tutorial found at:\
-https://www.javadevjournal.com/spring-security-tutorial\
+https://www.javadevjournal.com/spring-security-tutorial
+
 Their Github repo can be found at:\
 https://github.com/javadevjournal/javadevjournal/tree/master/spring-security/spring-security-series
 
