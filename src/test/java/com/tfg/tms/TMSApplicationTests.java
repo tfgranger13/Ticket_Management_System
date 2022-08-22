@@ -1,37 +1,14 @@
 package com.tfg.tms;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.platform.suite.api.SelectPackages;
+import org.junit.platform.suite.api.Suite;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import com.tfg.tms.controller.AdminController;
-import com.tfg.tms.controller.VisitorController;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
+// @formatter:off
+@Suite
+@SelectPackages({
+	"com.tfg.tms.test.dao",
+	"com.tfg.tms.test.service" })
 public class TMSApplicationTests {
 
-	@Autowired
-	private VisitorController visitorController;
-	@Autowired
-	private AdminController adminController;
-
-	@Test
-	public void contextLoadsEmpty() {
-	}
-
-	@Test
-	public void contextLoadsVisitor() throws Exception {
-		assertThat(visitorController).isNotNull();
-	}
-
-	@Test
-	public void contextLoadsAdmin() throws Exception {
-		assertThat(adminController).isNotNull();
-	}
-
 }
+// @formatter:on

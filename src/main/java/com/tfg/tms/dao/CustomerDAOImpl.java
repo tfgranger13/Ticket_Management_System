@@ -15,15 +15,15 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.tfg.tms.dto.RestTicketDTO;
 import com.tfg.tms.entity.Customer;
 import com.tfg.tms.entity.Ticket;
-import com.tfg.tms.rest.TicketRestDTO;
 
 /*
  * This class connects to the database to perform CRUD operations on Customers
  */
 
-// links with Spring
+// tell Spring that this is a special component used to perform CRUD operations in the database
 @Repository
 public class CustomerDAOImpl implements CustomerDAO {
 
@@ -32,8 +32,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 
 	// set up constructor injection
 	@Autowired
-	public CustomerDAOImpl(EntityManager theEntityManager) {
-		entityManager = theEntityManager;
+	public CustomerDAOImpl(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public List<TicketRestDTO> getCustomerTicketDTOs(Integer id) {
+	public List<RestTicketDTO> getCustomerTicketDTOs(Integer id) {
 
 		// get the session
 		Session session = entityManager.unwrap(Session.class);
@@ -143,9 +143,9 @@ public class CustomerDAOImpl implements CustomerDAO {
 		// get their set of tickets
 		Set<Ticket> tickets = customer.getTickets();
 		// make a list to return the ticket DTOs in
-		List<TicketRestDTO> ticketDTOs = new ArrayList<TicketRestDTO>();
+		List<RestTicketDTO> ticketDTOs = new ArrayList<RestTicketDTO>();
 		for (Ticket ticket : tickets) {
-			TicketRestDTO ticketDTO = new TicketRestDTO(ticket);
+			RestTicketDTO ticketDTO = new RestTicketDTO(ticket);
 			ticketDTOs.add(ticketDTO);
 		}
 		// return the results

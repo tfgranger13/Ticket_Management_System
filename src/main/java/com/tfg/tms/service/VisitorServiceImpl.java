@@ -5,7 +5,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tfg.tms.configuration.CustomerAlreadyExistException;
 import com.tfg.tms.dao.CustomerDAO;
 import com.tfg.tms.dao.CustomerRepository;
 import com.tfg.tms.dao.EmployeeDAO;
@@ -15,6 +14,7 @@ import com.tfg.tms.dto.RegisterDTO;
 import com.tfg.tms.entity.Customer;
 import com.tfg.tms.entity.Employee;
 import com.tfg.tms.entity.Role;
+import com.tfg.tms.exceptions.CustomerAlreadyExistsException;
 
 /*
  * This class is the implementation of the visitor service
@@ -24,18 +24,19 @@ import com.tfg.tms.entity.Role;
 public class VisitorServiceImpl implements VisitorService {
 
 	@Autowired
+	public VisitorServiceImpl(CustomerDAO customerDAO, EmployeeDAO employeeDAO, RoleRepository roleRepository,
+			CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
+		this.customerDAO = customerDAO;
+		this.employeeDAO = employeeDAO;
+		this.roleRepository = roleRepository;
+		this.customerRepository = customerRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
+
 	private CustomerDAO customerDAO;
-
-	@Autowired
 	private EmployeeDAO employeeDAO;
-
-	@Autowired
 	private RoleRepository roleRepository;
-
-	@Autowired
 	private CustomerRepository customerRepository;
-
-	@Autowired
 	PasswordEncoder passwordEncoder;
 
 	@Override
@@ -45,30 +46,35 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public void register(RegisterDTO registerDTO) throws CustomerAlreadyExistException {
+	@Transactional
+	public void register(RegisterDTO registerDTO) throws CustomerAlreadyExistsException {
 
-		if (checkIfUserExist(registerDTO.getEmail())) {
-			throw new CustomerAlreadyExistException("This email is already in use");
+		// if the user already exists
+		if (checkIfUserExists(registerDTO.getEmail())) {
+			// throw an exception
+			throw new CustomerAlreadyExistsException("This email is already in use");
 		}
 
 		Customer customer = new Customer(registerDTO);
-
-		// this is now broken. I changed the db and it won't save the role correctly now
 		updateCustomerRole(customer);
 		encodePassword(registerDTO, customer);
 		customerRepository.save(customer);
 	}
 
+	// method to add the customer role to a customer entity
 	private void updateCustomerRole(Customer customer) {
 		Role role = roleRepository.findByCode("customer");
 		customer.addCustomerRoles(role);
 	}
 
+	// method to see if the email address is already in the database
 	@Override
-	public boolean checkIfUserExist(String email) {
+	@Transactional
+	public boolean checkIfUserExists(String email) {
 		return customerRepository.findByEmail(email) != null ? true : false;
 	}
 
+	// use Bcrypt to hash the password before saving it in the database
 	private void encodePassword(RegisterDTO registerDTO, Customer customer) {
 		customer.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
 	}

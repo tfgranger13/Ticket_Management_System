@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.tfg.tms.configuration.CustomerAlreadyExistException;
 import com.tfg.tms.dto.RegisterDTO;
 import com.tfg.tms.entity.Customer;
+import com.tfg.tms.exceptions.CustomerAlreadyExistsException;
 import com.tfg.tms.service.VisitorService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -84,9 +84,9 @@ public class VisitorController {
 		// if there are no errors, try to register the customer with the service
 		try {
 			visitorService.register(registerDTO);
-		} catch (CustomerAlreadyExistException e) {
-			// if there are errors, add them to the results and send them back to the
-			// page
+		}
+		// catch the exception if the email is in use already
+		catch (CustomerAlreadyExistsException e) {
 			bindingResult.rejectValue("email", "userData.email", "An account already exists for this email.");
 			model.addAttribute("registerDTO", registerDTO);
 			return "register";

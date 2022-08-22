@@ -39,12 +39,12 @@ public class VisitorServiceTest {
 
 	@Test
 	public void testCheckIfUserExist() {
-		assertTrue(visitorService.checkIfUserExist("a@a.a"));
+		assertTrue(visitorService.checkIfUserExists("a@a.a"));
 	}
 
 	@Test
 	public void testCheckIfUserExistFalse() {
-		assertFalse(visitorService.checkIfUserExist("fakeEmail"));
+		assertFalse(visitorService.checkIfUserExists("fakeEmail"));
 	}
 
 }

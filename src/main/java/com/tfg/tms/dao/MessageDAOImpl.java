@@ -21,16 +21,13 @@ import com.tfg.tms.entity.Ticket;
 @Repository
 public class MessageDAOImpl implements MessageDAO {
 
-//	@Autowired
-//	private SessionFactory sessionFactory;
-
 	// define field for entitymanager
 	private EntityManager entityManager;
 
 	// set up constructor injection
 	@Autowired
-	public MessageDAOImpl(EntityManager theEntityManager) {
-		entityManager = theEntityManager;
+	public MessageDAOImpl(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 	@Override

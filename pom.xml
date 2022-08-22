@@ -125,6 +125,12 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>org.junit.platform</groupId>
+		    <artifactId>junit-platform-suite-engine</artifactId>
+		    <version>1.8.1</version>
+		</dependency>
+		
+		<dependency>
 		    <groupId>javax.validation</groupId>
 		    <artifactId>validation-api</artifactId>
 	    </dependency>

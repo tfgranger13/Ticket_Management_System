@@ -18,16 +18,13 @@ import com.tfg.tms.entity.Ticket;
 @Repository
 public class TicketDAOImpl implements TicketDAO {
 
-//	@Autowired
-//	private SessionFactory sessionFactory;
-
 	// define field for entitymanager
 	private EntityManager entityManager;
 
 	// set up constructor injection
 	@Autowired
-	public TicketDAOImpl(EntityManager theEntityManager) {
-		entityManager = theEntityManager;
+	public TicketDAOImpl(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 	@Override

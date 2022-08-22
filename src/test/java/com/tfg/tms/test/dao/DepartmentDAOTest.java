@@ -106,10 +106,11 @@ public class DepartmentDAOTest {
 
 	@Test
 	public void testDeleteDepartment() {
-		Department testDept = departmentDAO.getDepartment(200);
-		departmentDAO.deleteDepartment(200);
+		Department testDept = departmentDAO.getDepartment(1);
+		Department checkDept = testDept;
+		departmentDAO.deleteDepartment(1);
 		List<Department> allDepartments = departmentDAO.getDepartments();
-		assertFalse(allDepartments.contains(testDept));
+		assertFalse(allDepartments.contains(checkDept));
 	}
 
 }

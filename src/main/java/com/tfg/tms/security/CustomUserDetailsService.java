@@ -37,6 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		Customer customer = repo.findByEmail(email);
 		// if the customer doesn't exist, throw an exception
 		if (customer == null) {
+			// TODO: check to see if the person logging in is an employee?
 			throw new UsernameNotFoundException("Customer Not Found");
 		}
 
@@ -63,7 +64,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		Collection<GrantedAuthority> authorities = new ArrayList<>(userRoles.size());
 		for (Role userRole : userRoles) {
 			// MySQL doesn't like upper case, so the roles are stored as lower case
-			// make the roles upper case so they can be recognized by Spring Security
+			// .toUpperCase() used so roles can be recognized by Spring Security
 			authorities.add(new SimpleGrantedAuthority(userRole.getCode().toUpperCase()));
 		}
 
